@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+import io.github.cdimascio.dotenv.Dotenv;
 
 import java.io.IOException;
 import java.net.URI;
@@ -8,7 +9,13 @@ import java.net.http.HttpResponse;
 
 public class ExchangeRateService {
     public ExchangeRate exchangeRate(String base_currency, String target_currency, Double amount_to_convert) {
-        String apiKey = "";
+        Dotenv dotenv = Dotenv.load();
+        String apiKey = dotenv.get("EXCHANGE_RATE_API_KEY");
+
+        if (apiKey == null) {
+            throw new RuntimeException("API Key no encontrada");
+        }
+
         String amout_parced = String.valueOf(amount_to_convert);
         URI link = URI.create("https://v6.exchangerate-api.com/v6/" + apiKey + "/pair/" + base_currency + "/" + target_currency + "/" + amout_parced);
 
